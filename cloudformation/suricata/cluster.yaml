@@ -511,7 +511,8 @@ Resources:
           set -e
           
           # Define variables
-          curl --silent http://169.254.169.254/latest/dynamic/instance-identity/document > /home/ec2-user/iid
+          token=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+          curl --silent -H "X-aws-ec2-metadata-token: $token" http://169.254.169.254/latest/dynamic/instance-identity/document > /home/ec2-user/iid
           instance_ip=$(cat /home/ec2-user/iid | awk -F '"' '/privateIp/ {print $4}')
           instance_id=$(cat /home/ec2-user/iid | awk -F '"' '/instanceId/ {print $4}')
           
